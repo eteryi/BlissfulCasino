@@ -1,0 +1,16 @@
+name: Casino
+version: '${project.version}'
+main: dev.cross.casino.Casino
+api-version: '1.20'
+commands:
+  test:
+    usage: /test
+    description: testing the test
+  token:
+    usage: /token
+    description: tokening the token
+  casino:
+    usage: /casino
+    description: casinoing the casino
+depend:
+  - BlissfulAPI
