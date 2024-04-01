@@ -20,9 +20,11 @@ import java.util.Optional;
 public class RouletteInventory extends GameInventory {
     private RouletteGame.Color colorSelected;
     private RouletteGame game;
+    private boolean hasStarted;
 
     public RouletteInventory(Player player, int betAmount) {
         super(player, betAmount);
+        this.hasStarted = false;
         this.colorSelected = RouletteGame.Color.BLACK;
         addButton(new SpinButton(this), 12);
     }
@@ -49,8 +51,9 @@ public class RouletteInventory extends GameInventory {
     }
 
     private void start(Inventory inventory) {
-        if (game == null) {
+        if (game == null && !hasStarted) {
             game = new RouletteGame(getPlayer(), getBetAmount(), this.colorSelected, inventory);
+            this.hasStarted = true;
             game.start();
         }
     }
@@ -58,7 +61,7 @@ public class RouletteInventory extends GameInventory {
     @Override
     protected void onInteract(InventoryClickEvent event) {
         assert event.getClickedInventory() != null;
-        if (event.getSlot() == CHIP_POSITION) {
+        if (event.getSlot() == CHIP_POSITION && !hasStarted) {
             this.colorSelected = RouletteGame.Color.values()[this.colorSelected.ordinal() + 1 >= RouletteGame.Color.values().length ? 0 : this.colorSelected.ordinal() + 1];
             update(event.getClickedInventory());
         }

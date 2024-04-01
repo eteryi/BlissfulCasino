@@ -25,6 +25,7 @@ public interface TokenManager {
     }
 
     static TokenManager getImpl(Player player) {
+        // return new SimpleTokenManager();
         return new BlissfulTokenManager(player);
     }
 }
