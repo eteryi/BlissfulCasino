@@ -7,14 +7,12 @@ import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class RouletteInventory extends GameInventory {
@@ -26,7 +24,7 @@ public class RouletteInventory extends GameInventory {
         super(player, betAmount);
         this.hasStarted = false;
         this.colorSelected = RouletteGame.Color.BLACK;
-        addButton(new SpinButton(this), 12);
+        addButton(new SpinButton(this), 12 + 9);
     }
 
     @Override
@@ -37,12 +35,14 @@ public class RouletteInventory extends GameInventory {
     }
 
     private static final int CHIP_POSITION = 7 + 9;
+    public static final int ROULETTE_POSITION = 13;
 
     @Override
     protected Inventory inventorySupplier() {
         LegacyComponentSerializer componentSerializer = BukkitComponentSerializer.legacy();
         Inventory inventory = Bukkit.createInventory(getPlayer(), 27, componentSerializer.serialize(BElements.ROULETTE_SCREEN));
         inventory.setItem(CHIP_POSITION, colorSelected.getItemStack());
+        inventory.setItem(ROULETTE_POSITION, BetInventory.getItemStackWith(new ItemStack(BElements.ROULETTE_RED_ITEM.first()), BElements.ROULETTE_RED_ITEM.second(), Component.text("Roulette")));
         return inventory;
     }
 
@@ -52,8 +52,9 @@ public class RouletteInventory extends GameInventory {
 
     private void start(Inventory inventory) {
         if (game == null && !hasStarted) {
-            game = new RouletteGame(getPlayer(), getBetAmount(), this.colorSelected, inventory);
+            game = new RouletteGame(getPlayer(), getBetAmount(), this.colorSelected);
             this.hasStarted = true;
+            inventory.setItem(ROULETTE_POSITION, BetInventory.getItemStackWith(new ItemStack(BElements.ROULETTE_SPINNING_ITEM.first()), BElements.ROULETTE_SPINNING_ITEM.second(), Component.text("Roulette")));
             game.start();
         }
     }

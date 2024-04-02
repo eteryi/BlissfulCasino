@@ -1,21 +1,16 @@
 package dev.cross.casino.game;
 
 import dev.cross.blissfulcore.ui.BColors;
-import dev.cross.blissfulcore.ui.BComponents;
 import dev.cross.casino.Casino;
 import dev.cross.casino.player.CasinoPlayer;
 import dev.cross.casino.ui.BElements;
 import dev.cross.casino.ui.inventory.BetInventory;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Random;
 
@@ -29,28 +24,36 @@ public class RouletteGame {
 
                 return BetInventory.getItemStackWith(new ItemStack(BElements.RED_CHIP.first()), BElements.RED_CHIP.second(), Component.text("Red").color(BColors.RED));
             }
+
+            @Override
+            public Color getReverse() {
+                return Color.BLACK;
+            }
         }, BLACK {
             @Override
             public ItemStack getItemStack() {
                 return BetInventory.getItemStackWith(new ItemStack(BElements.BLACK_CHIP.first()), BElements.BLACK_CHIP.second(), Component.text("Black").color(BColors.LIGHT_PURPLE));
             }
+
+            @Override
+            public Color getReverse() {
+                return Color.RED;
+            }
         };
 
         public abstract ItemStack getItemStack();
+        public abstract Color getReverse();
     }
 
     private final Player player;
     private final int betAmount;
-    private final Inventory inventory;
     private final Color betColor;
     private Color winningColor;
-    private BukkitTask gameTask;
 
-    public RouletteGame(Player player, int betAmount, Color betColor, Inventory inventory) {
+    public RouletteGame(Player player, int betAmount, Color betColor) {
         this.player = player;
         this.betAmount = betAmount;
         this.betColor = betColor;
-        this.inventory = inventory;
     }
 
     public void start() {
@@ -60,27 +63,30 @@ public class RouletteGame {
             return;
         }
         casinoPlayer.setCurrency(casinoPlayer.getCurrency() - betAmount);
+
         Random random = new Random();
-        if (random.nextInt() % 2 == 0) {
-            winningColor = Color.BLACK;
+        if (random.nextInt() % 4 == 0) {
+            winningColor = this.betColor;
         } else {
-            winningColor = Color.RED;
+            winningColor = this.betColor.getReverse();
         }
 
-
-
-        BukkitTask task = new BukkitRunnable() {
+        // Component message = BComponents.PREFIX.append(Component.text("You have won ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount * 2).color(BColors.YELLOW).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
+        //Component message = BComponents.PREFIX.append(Component.text("You have lost ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount).color(BColors.RED).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
+        new BukkitRunnable() {
             @Override
             public void run() {
                 LegacyComponentSerializer componentSerializer = BukkitComponentSerializer.legacy();
                 player.closeInventory();
                 if (winningColor == betColor) {
-                    Component message = BComponents.PREFIX.append(Component.text("You have won ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount * 2).color(BColors.YELLOW).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
-                    player.sendMessage(componentSerializer.serialize(message));
+                    // Component message = BComponents.PREFIX.append(Component.text("You have won ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount * 2).color(BColors.YELLOW).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
+                    Component message = Component.text("[ ").color(BColors.LIGHT_PURPLE).append(Component.text("+").color(BColors.YELLOW)).append(Component.text(betAmount * 2).color(BColors.YELLOW)).append(BElements.TOKEN_UNICODE).append(Component.text(" ]"));
+                    player.sendTitle("", componentSerializer.serialize(message), 20, 100, 20);
                     casinoPlayer.setCurrency(casinoPlayer.getCurrency() + (betAmount * 2));
                 } else {
-                    Component message = BComponents.PREFIX.append(Component.text("You have lost ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount).color(BColors.RED).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
-                    player.sendMessage(componentSerializer.serialize(message));
+                    //Component message = BComponents.PREFIX.append(Component.text("You have lost ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount).color(BColors.RED).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
+                    Component message = Component.text("[ ").color(BColors.LIGHT_PURPLE).append(Component.text("-").color(BColors.RED)).append(Component.text(betAmount).color(BColors.RED)).append(BElements.TOKEN_UNICODE).append(Component.text(" ]"));
+                    player.sendTitle("", componentSerializer.serialize(message), 20, 100, 20);
                 }
             }
         }.runTaskLater(Casino.getPlugin(), GAME_TIME_IN_SECONDS * 20);

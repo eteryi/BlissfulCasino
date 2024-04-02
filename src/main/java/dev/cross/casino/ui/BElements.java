@@ -2,7 +2,6 @@ package dev.cross.casino.ui;
 
 import dev.cross.blissfulcore.Pair;
 import dev.cross.blissfulcore.ui.BColors;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -11,6 +10,7 @@ import org.bukkit.Material;
 public class BElements {
 
     public static final Component NEGATIVE_SPACE = Component.text("\uE201");
+    public static final Component TOKEN_UNICODE = Component.text("\uE207").color(NamedTextColor.WHITE);
     public static final Component BET_SCREEN = NEGATIVE_SPACE.append(Component.text("\uE200").color(NamedTextColor.WHITE));
     public static final Component ROULETTE_SCREEN = NEGATIVE_SPACE.append(Component.text("\uE205").color(NamedTextColor.WHITE));
 
@@ -23,6 +23,9 @@ public class BElements {
     public static final Pair<Material, Integer> SELECTED_BET_BUTTON = Pair.of(Material.GOLD_NUGGET, 2);
     public static final Pair<Material, Integer> SPIN_BUTTON = Pair.of(Material.GOLD_NUGGET, 3);
     public static final Pair<Material, Integer> SELECTED_SPIN_BUTTON = Pair.of(Material.GOLD_NUGGET, 4);
+
+    public static final Pair<Material, Integer> ROULETTE_SPINNING_ITEM = Pair.of(Material.GOLD_NUGGET, 5);
+    public static final Pair<Material, Integer> ROULETTE_RED_ITEM = Pair.of(Material.GOLD_NUGGET, 6);
 
     public static final Pair<Material, Integer> ROULETTE_DISPLAY = Pair.of(Material.PAPER, 7);
     public static final Pair<Material, Integer> START_BUTTON_DISPLAY = Pair.of(Material.PAPER, 8);

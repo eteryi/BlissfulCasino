@@ -7,15 +7,10 @@ import dev.cross.casino.player.CasinoPlayer;
 import dev.cross.casino.ui.BElements;
 import dev.cross.casino.ui.inventory.button.BetButton;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
-import net.kyori.adventure.platform.bukkit.MinecraftComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.BaseComponentSerializer;
-import net.md_5.bungee.chat.TextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,11 +19,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class BetInventory extends GUIInventory {
     public static class Pair<T, R> {
@@ -61,6 +53,7 @@ public class BetInventory extends GUIInventory {
     private ItemStack getAmountAsPaper() {
         ItemStack paper = new ItemStack(BElements.TOKEN_ITEM.first());
         ItemMeta meta = paper.getItemMeta();
+        if (meta == null) throw new RuntimeException("welp...");
         LegacyComponentSerializer componentSerializer = BukkitComponentSerializer.legacy();
         meta.setDisplayName(componentSerializer.serialize(Component.text("Bet Amount: ").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false).append(Component.text(betAmount).color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD))));
         meta.setCustomModelData(BElements.TOKEN_ITEM.second());
@@ -70,6 +63,7 @@ public class BetInventory extends GUIInventory {
 
     public static ItemStack getItemStackWith(ItemStack stack, int customModelData, Component text) {
         ItemMeta meta = stack.getItemMeta();
+        if (meta == null) throw new RuntimeException("welp...");
         meta.setCustomModelData(customModelData);
         LegacyComponentSerializer componentSerializer = BukkitComponentSerializer.legacy();
         meta.setDisplayName(componentSerializer.serialize(text));
@@ -110,6 +104,7 @@ public class BetInventory extends GUIInventory {
         return true;
     }
 
+    private static final int HARD_BETTING_LIMIT = 1500;
     @Override
     protected void onInteract(InventoryClickEvent event) {
         int amount = event.isShiftClick() ? 100 : 10;
@@ -120,7 +115,7 @@ public class BetInventory extends GUIInventory {
             }
         }
         if (event.getSlot() == 2) {
-            this.betAmount = Math.min(CasinoPlayer.from(getPlayer()).getCurrency(), betAmount + amount);
+            this.betAmount = Math.min(HARD_BETTING_LIMIT, Math.min(CasinoPlayer.from(getPlayer()).getCurrency(), betAmount + amount));
             if (event.getClickedInventory() != null) {
                 update(event.getClickedInventory());
             }
