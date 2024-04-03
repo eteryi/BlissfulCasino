@@ -19,7 +19,6 @@ public class CasinoPlayer {
     }
 
     private PlayerRaycast raycast;
-    private PlayerHUD playerHUD;
     private final UUID player;
     private WindowDisplay currentlyLooking;
     private final TokenManager tokenManager;
@@ -71,15 +70,11 @@ public class CasinoPlayer {
         if (p == null || !p.isOnline()) return;
 
         initRaycast(p);
-        this.playerHUD = new PlayerHUD(p);
         this.tickTask = new BukkitRunnable() {
             @Override
             public void run() {
                 if (raycast != null) {
                     raycast.tick();
-                }
-                if (playerHUD != null) {
-                    playerHUD.tick();
                 }
             }
         }.runTaskTimer(Casino.getPlugin(), 0L, 1L);
