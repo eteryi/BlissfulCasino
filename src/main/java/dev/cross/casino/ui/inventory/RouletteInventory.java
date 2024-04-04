@@ -1,5 +1,6 @@
 package dev.cross.casino.ui.inventory;
 
+import dev.cross.blissfulcore.ui.BSounds;
 import dev.cross.casino.game.RouletteGame;
 import dev.cross.casino.ui.BElements;
 import dev.cross.casino.ui.inventory.button.SpinButton;
@@ -47,6 +48,7 @@ public class RouletteInventory extends GameInventory {
     }
 
     private void update(Inventory inventory) {
+        getPlayer().playSound(getPlayer(), BSounds.BUTTON_CLICK, 1.0f, 1.0f);
         inventory.setItem(CHIP_POSITION, colorSelected.getItemStack());
     }
 

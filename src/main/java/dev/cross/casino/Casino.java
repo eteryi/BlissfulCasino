@@ -29,6 +29,7 @@ public final class Casino extends JavaPlugin {
 
         public void stop() {
             Bukkit.getOnlinePlayers().forEach(it -> { CasinoPlayer.from(it).stop(); it.closeInventory(); });
+            this.active = false;
         }
 
         public boolean isActive() {
@@ -36,13 +37,13 @@ public final class Casino extends JavaPlugin {
         }
     }
 
-    public static final State CASINO_STATE =  new State();
+    public static final State CASINO_STATE = new State();
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
-
+        CASINO_STATE.start();
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         registerCommands();
     }
@@ -52,7 +53,7 @@ public final class Casino extends JavaPlugin {
     }
 
     public void registerCommands() {
-        registerCommand("test", new TestCommand());
+        registerCommand("spawn-roulette", new TestCommand());
         registerCommand("token", new TokenCommand());
         registerCommand("casino", new CasinoCommand());
     }

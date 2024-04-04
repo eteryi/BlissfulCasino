@@ -8,6 +8,7 @@ import dev.cross.casino.ui.inventory.BetInventory;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -82,10 +83,12 @@ public class RouletteGame {
                     // Component message = BComponents.PREFIX.append(Component.text("You have won ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount * 2).color(BColors.YELLOW).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
                     Component message = Component.text("[ ").color(BColors.LIGHT_PURPLE).append(Component.text("+").color(BColors.YELLOW)).append(Component.text(betAmount * 2).color(BColors.YELLOW)).append(BElements.TOKEN_UNICODE).append(Component.text(" ]"));
                     player.sendTitle("", componentSerializer.serialize(message), 20, 100, 20);
+                    player.playSound(player, Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
                     casinoPlayer.setCurrency(casinoPlayer.getCurrency() + (betAmount * 2));
                 } else {
                     //Component message = BComponents.PREFIX.append(Component.text("You have lost ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount).color(BColors.RED).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
                     Component message = Component.text("[ ").color(BColors.LIGHT_PURPLE).append(Component.text("-").color(BColors.RED)).append(Component.text(betAmount).color(BColors.RED)).append(BElements.TOKEN_UNICODE).append(Component.text(" ]"));
+                    player.playSound(player, Sound.ITEM_SHIELD_BREAK, 1.0f, 0.5F);
                     player.sendTitle("", componentSerializer.serialize(message), 20, 100, 20);
                 }
             }

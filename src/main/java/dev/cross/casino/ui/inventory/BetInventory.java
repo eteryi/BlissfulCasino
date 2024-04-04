@@ -1,6 +1,7 @@
 package dev.cross.casino.ui.inventory;
 
 import dev.cross.blissfulcore.ui.BColors;
+import dev.cross.blissfulcore.ui.BSounds;
 import dev.cross.blissfulcore.ui.inventory.GUIInventory;
 import dev.cross.casino.Casino;
 import dev.cross.casino.player.CasinoPlayer;
@@ -50,6 +51,12 @@ public class BetInventory extends GUIInventory {
         addButton(new BetButton(this), 14);
     }
 
+    @Override
+    public void open() {
+        super.open();
+        getPlayer().playSound(getPlayer(), BSounds.INVENTORY_OPEN, 1.0f, 1.0f);
+    }
+
     private ItemStack getAmountAsPaper() {
         ItemStack paper = new ItemStack(BElements.TOKEN_ITEM.first());
         ItemMeta meta = paper.getItemMeta();
@@ -83,6 +90,7 @@ public class BetInventory extends GUIInventory {
     }
 
     private void update(Inventory inventory) {
+        getPlayer().playSound(getPlayer(), BSounds.BUTTON_CLICK, 1.0f, 1.0f);
         inventory.setItem(11, getAmountAsPaper());
     }
 

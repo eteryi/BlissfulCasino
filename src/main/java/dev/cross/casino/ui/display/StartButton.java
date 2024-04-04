@@ -1,7 +1,9 @@
 package dev.cross.casino.ui.display;
 
 import dev.cross.blissfulcore.ui.display.InteractWindowDisplay;
+import dev.cross.casino.Casino;
 import dev.cross.casino.ui.BElements;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,6 +21,7 @@ public class StartButton extends InteractWindowDisplay {
 
     public static ItemStack getItemStackWithModelData(ItemStack stack, int customModelData) {
         ItemMeta meta = stack.getItemMeta();
+        assert meta != null;
         meta.setCustomModelData(customModelData);
         stack.setItemMeta(meta);
         return stack;
@@ -41,6 +44,8 @@ public class StartButton extends InteractWindowDisplay {
 
     @Override
     public void onInteraction(Player player) {
+        if (!Casino.CASINO_STATE.isActive()) return;
+        if (player.getGameMode() == GameMode.SPECTATOR) return;
         this.startFunction.accept(player);
     }
 }
