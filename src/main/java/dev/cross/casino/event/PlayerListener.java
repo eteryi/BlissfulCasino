@@ -21,10 +21,4 @@ public class PlayerListener implements Listener {
         CasinoPlayer player = CasinoPlayer.from(e.getPlayer());
         if (Casino.CASINO_STATE.isActive()) player.stop();
     }
-
-    @EventHandler
-    public void onFoodLevelChange(FoodLevelChangeEvent event) {
-        event.setFoodLevel(20);
-        event.setCancelled(true);
-    }
 }
