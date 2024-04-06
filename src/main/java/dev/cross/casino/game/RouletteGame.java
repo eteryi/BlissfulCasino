@@ -18,7 +18,6 @@ import java.util.Random;
 
 public class RouletteGame {
     public static final int GAME_TIME_IN_SECONDS = 5;
-    private static final HashSet<Player> alreadyRolled = new HashSet<>();
 
     public enum Color {
         RED {
@@ -69,15 +68,11 @@ public class RouletteGame {
 
         Random random = new Random();
 
-        int rand = alreadyRolled.contains(player) ? 3 : 2;
-
-        if (random.nextInt() % rand == 0) {
+        if (random.nextInt(0, 101) <= 40) {
             winningColor = this.betColor;
         } else {
             winningColor = this.betColor.getReverse();
         }
-
-        alreadyRolled.add(player);
 
         // Component message = BComponents.PREFIX.append(Component.text("You have won ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount * 2).color(BColors.YELLOW).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));
         //Component message = BComponents.PREFIX.append(Component.text("You have lost ").color(BColors.LIGHT_PURPLE).append(Component.text(betAmount).color(BColors.RED).decorate(TextDecoration.BOLD)).append(Component.text(" tokens").color(BColors.LIGHT_PURPLE)));

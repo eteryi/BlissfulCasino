@@ -97,7 +97,7 @@ public class BetInventory extends GUIInventory {
     public boolean bet() {
         if (betAmount <= 0) {
             LegacyComponentSerializer componentSerializer = BukkitComponentSerializer.legacy();
-            getPlayer().sendMessage(componentSerializer.serialize(Component.text(" ⚠ You can't bet 0 tokens buddy").color(BColors.RED)));
+            getPlayer().sendMessage(componentSerializer.serialize(Component.text(" ⚠ You're too broke to be betting").color(BColors.RED)));
             return false;
         }
         GameInventory inventory = gameInventorySupplier.apply(new Pair<>(getPlayer(), this.betAmount));
